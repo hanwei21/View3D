@@ -1,0 +1,18 @@
+# 构建与部署产物（CMake 预设输出目录）
+out/
+
+# Visual Studio 解决方案缓存（体积大且本机生成）
+.vs/
+**/.vs/
+*.user
+
+# 第三方 SDK：Ogre-Next / Qt / ui-deps / OSG 由本机环境提供，不入库；
+# 但保留 licenses 目录，记录许可证与来源说明。
+third_party/*
+!third_party/licenses/
+
+# 运行期日志
+*.log
+
+# Windows 可执行文件与打包产物（构建生成，不入库）
+*.exe

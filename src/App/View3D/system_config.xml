@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<systemconfig version="1">
+    <!-- 视口截图运行默认值；Ribbon 命令及分组仍由 ui_config.xml 控制。 -->
+    <viewportcapture defaultFormat="png" jpegQuality="90" outputScale="1.0"
+                     includeWidgetOverlays="false"/>
+
+    <!-- 三维视口运行默认值；相关命令的位置仍由 ui_config.xml 控制。 -->
+    <rendering displayMode="solid" viewMode="3d" maxVertices="50000000" frameRate="60" gridVisible="true" axesVisible="true"
+               gridColor="#4D576B" gridExtent="20" gridDivisions="40"
+               axisLength="5" backgroundMode="gradient"
+               backgroundTopColor="#152033" backgroundBottomColor="#080D16"
+               ambientLightVisible="true" ambientLightColor="#FFFFFF"
+               ambientLightIntensity="0.35" mainLightVisible="true"
+               mainLightColor="#FFF4E0" mainLightIntensity="1.5"
+               mainLightDirectionX="-0.45" mainLightDirectionY="-0.80"
+               mainLightDirectionZ="-0.35" shadowEnabled="true"
+               shadowQuality="balanced"/>
+
+    <!-- 流式瓦片（倾斜摄影）缓存策略。preset 取 low / balanced / high / custom，
+         显式写出的属性覆盖档位基线；容量一律以 MB 书写。
+         cacheMB 是软上限（超出按 LRU 淘汰），overflowMB 是当前视角需要的余量：
+         软上限 + 余量都装不下时，按 Cesium memoryAdjustedScreenSpaceError 的
+         方式缓慢放大误差阈值，让整屏一起退到装得下的层级，而不是无界增长。 -->
+    <tilecache preset="balanced" cacheMB="1024" overflowMB="256" indexCacheMB="40"
+               maxTiles="1200" screenSpaceError="16" centerCone="0.6"
+               workers="6" maxInFlight="32" maxUploadPending="96" keepAliveMs="2000"
+               preloadSiblings="false" dynamicScreenSpaceError="true"
+               dseFactor="24.0" dseDensity="0.00278" dseHeightFalloff="0.25"/>
+</systemconfig>

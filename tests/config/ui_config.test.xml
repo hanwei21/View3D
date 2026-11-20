@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 配置驱动回归夹具：与默认 ui_config.xml 相比，
+     - 不声明 rightbuttons，验证右上角 Ribbon 收起命令可移除
+     - 修改场景树 Dock 的整体标题
+     - 修改一个命令项文案、增删各一个命令项
+     场景树仍作为一个整体控件，仅通过 dockwindow 声明一次。 -->
+<application createtime="2026-10-26 00:00:00">
+    <runtime>
+        <librarypaths>
+            <path value="."/>
+            <path value="plugins"/>
+        </librarypaths>
+    </runtime>
+
+    <packages>
+        <package id="plugin.view3d.renderer" path="plugins/View3DRendererPlugin.dll" required="true" provides="view3d.service.renderer,view3d.service.scene"/>
+        <package id="plugin.view3d.sceneview" path="plugins/View3DSceneViewPlugin.dll" required="true" requires="plugin.view3d.renderer" provides="view3d.ui.viewport_layout,view3d.service.viewport,view3d.service.scene_layers,view3d.ui.scene_tree_dock"/>
+    </packages>
+
+    <mainapp pluginPath="View3DApplicationPlugin.dll"
+             entry="runConfiguredApplication"
+             caption="View3D 配置驱动测试" windowstate="normal"
+             width="1280" height="800" x="100" y="80"/>
+
+    <welcomescreen enable="false" mode="image" image="resources/welcome.png"
+                   stretch="uniform"/>
+
+    <ribboncontrol style="office" theme="light">
+        <ribbonpages>
+            <ribbonpage name="page.test" text="测试页">
+                <ribbonpagegroup name="group.layout" text="布局">
+                    <item name="cmd.viewport.layout_single" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="测试单视口" type="command" iconSize="small" icon="resources/icons/viewport-single.svg"/>
+                    <item name="cmd.viewport.layout_dual" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="双视口" type="command" iconSize="small" icon="resources/icons/viewport-dual.svg"/>
+                    <item name="cmd.viewport.layout_quad" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="四视口" type="command" iconSize="small" icon="resources/icons/viewport-quad.svg"/>
+                    <item name="cmd.viewport.camera_sync" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="同步相机" type="checkcommand" iconSize="small" icon="resources/icons/camera-sync.svg"/>
+                    <item name="cmd.camera.copy" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="复制相机状态（配置新增）" type="command" iconSize="small" icon="resources/icons/action-copy.svg"/>
+                </ribbonpagegroup>
+                <ribbonpagegroup name="group.appearance" text="外观">
+                    <item name="cmd.theme.light" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="浅色主题" type="checkcommand" exclusiveGroup="app.theme" iconSize="small" icon="resources/icons/theme-light.svg"/>
+                    <item name="cmd.theme.dark" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="深色主题" type="checkcommand" exclusiveGroup="app.theme" iconSize="small" icon="resources/icons/theme-dark.svg"/>
+                    <item name="cmd.theme.variant" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="主题" type="dropdown" iconSize="small" icon="resources/icons/theme-palette.svg">
+                        <option value="windows7" text="Windows 7" group="light"/>
+                        <option value="office2013" text="Office 2013" group="light"/>
+                        <option value="office2016-blue" text="Office 2016 Blue" group="light"/>
+                        <option value="office2021-blue" text="Office 2021 Blue" group="light"/>
+                        <option value="dark" text="Dark" group="dark"/>
+                        <option value="dark2" text="Dark 2" group="dark"/>
+                    </item>
+                </ribbonpagegroup>
+                <ribbonpagegroup name="group.ribbon_layout" text="Ribbon 布局">
+                    <item name="cmd.ribbon.style.loose_three" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="宽松三行" type="checkcommand" exclusiveGroup="ribbon.style" iconSize="small" icon="resources/icons/ribbon-3-loose.svg"/>
+                    <item name="cmd.ribbon.style.compact_three" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="紧凑三行" type="checkcommand" exclusiveGroup="ribbon.style" iconSize="small" icon="resources/icons/ribbon-3-compact.svg"/>
+                    <item name="cmd.ribbon.style.loose_two" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="宽松两行" type="checkcommand" exclusiveGroup="ribbon.style" iconSize="small" icon="resources/icons/ribbon-2-loose.svg"/>
+                    <item name="cmd.ribbon.style.compact_two" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="紧凑两行" type="checkcommand" exclusiveGroup="ribbon.style" iconSize="small" icon="resources/icons/ribbon-2-compact.svg"/>
+                    <item name="cmd.ribbon.style.loose_single" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="宽松单行" type="checkcommand" exclusiveGroup="ribbon.style" iconSize="small" icon="resources/icons/ribbon-1-loose.svg"/>
+                    <item name="cmd.ribbon.style.compact_single" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="紧凑单行" type="checkcommand" exclusiveGroup="ribbon.style" iconSize="small" icon="resources/icons/ribbon-1-compact.svg"/>
+                </ribbonpagegroup>
+                <ribbonpagegroup name="group.windows" text="窗口">
+                    <item name="cmd.window.plugins" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="插件管理" type="checkcommand" iconSize="small" icon="resources/icons/window-plugins.svg"/>
+                    <item name="cmd.window.log" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="日志" type="checkcommand" iconSize="small" icon="resources/icons/window-log.svg"/>
+                    <item name="cmd.window.properties" pluginId="plugin.view3d.sceneview" factoryId="factory.create_scene_command" caption="图层属性" type="checkcommand" iconSize="small" icon="resources/icons/window-properties.svg"/>
+                </ribbonpagegroup>
+            </ribbonpage>
+        </ribbonpages>
+    </ribboncontrol>
+
+    <applicationLayout>
+        <dockwindows>
+            <dockwindow name="dw.scene" text="测试场景" pluginId="plugin.view3d.sceneview" factoryId="factory.create_dockwindow"
+                        prefwidth="300" prefheight="720" enable="true" floatable="true" floating="false"
+                        dockpos="left" visibility="Visible" icon="resources/icons/window-scene.svg"/>
+            <dockwindow name="dw.plugins" text="插件管理" pluginId="plugin.view3d.host" factoryId="factory.create_dockwindow"
+                        prefwidth="760" prefheight="320" enable="true" floatable="true" floating="false"
+                        dockpos="right" visibility="Hidden" toggleCommand="cmd.window.plugins"
+                        icon="resources/icons/window-plugins.svg"/>
+            <dockwindow name="dw.log" text="日志" pluginId="plugin.view3d.host" factoryId="factory.create_dockwindow"
+                        prefwidth="640" prefheight="220" enable="true" floatable="true" floating="false"
+                        dockpos="bottom" visibility="Hidden" toggleCommand="cmd.window.log"
+                        icon="resources/icons/window-log.svg"/>
+            <dockwindow name="dw.properties" text="测试图层属性" pluginId="plugin.view3d.sceneview" factoryId="factory.create_dockwindow"
+                        prefwidth="320" prefheight="640" enable="true" floatable="true" floating="false"
+                        dockpos="right" visibility="Hidden" toggleCommand="cmd.window.properties"
+                        icon="resources/icons/window-properties.svg"/>
+        </dockwindows>
+        <contentsviews>
+            <contentsview name="view.document_main" text="测试视图"
+                          pluginId="plugin.view3d.sceneview" factoryId="factory.create_contentsview"
+                          defaultHost="documentTabs" icon="resources/icons/app-view.svg"/>
+        </contentsviews>
+    </applicationLayout>
+</application>

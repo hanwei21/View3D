@@ -1,0 +1,106 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "view3d-release",
+      "displayName": "View3D x64 Release - Qt 6.8.4 / Ogre-Next 3.0.0",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDLL",
+        "CMAKE_PREFIX_PATH": "${sourceDir}/third_party/qt/6.8.4-msvc2022_64;${sourceDir}/third_party/ui-deps",
+        "OGRE_NEXT_ROOT": "${sourceDir}/third_party/ogre-next/v3.0.0",
+        "BUILD_TESTING": "ON",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      },
+      "environment": {
+        "VSCMD_SKIP_SENDTELEMETRY": "1"
+      }
+    },
+    {
+      "name": "view3d-framework",
+      "displayName": "View3D framework libraries target (full configure, Ogre required)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/framework",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDLL",
+        "CMAKE_PREFIX_PATH": "${sourceDir}/third_party/qt/6.8.4-msvc2022_64;${sourceDir}/third_party/ui-deps",
+        "OGRE_NEXT_ROOT": "${sourceDir}/third_party/ogre-next/v3.0.0",
+        "BUILD_TESTING": "OFF",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      },
+      "environment": {
+        "VSCMD_SKIP_SENDTELEMETRY": "1"
+      }
+    },
+    {
+      "name": "view3d-framework-vs2015",
+      "displayName": "View3D Framework VS2015 solution (browse only; Qt6.8 cannot compile with v140)",
+      "generator": "Visual Studio 14 2015",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/out/framework-vs2015",
+      "cacheVariables": {
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDLL",
+        "CMAKE_PREFIX_PATH": "${sourceDir}/third_party/qt/6.8.4-msvc2022_64;${sourceDir}/third_party/ui-deps",
+        "OGRE_NEXT_ROOT": "${sourceDir}/third_party/ogre-next/v3.0.0",
+        "BUILD_TESTING": "OFF",
+        "CMAKE_WARN_VS14": "OFF"
+      },
+      "environment": {
+        "VSCMD_SKIP_SENDTELEMETRY": "1"
+      }
+    },
+    {
+      "name": "view3d-ide",
+      "displayName": "View3D x64 IDE solution (v143 14.44)",
+      "generator": "Visual Studio 18 2026",
+      "architecture": "x64",
+      "toolset": "v143,version=14.44.35207",
+      "binaryDir": "${sourceDir}/out/ide",
+      "cacheVariables": {
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDLL",
+        "CMAKE_PREFIX_PATH": "${sourceDir}/third_party/qt/6.8.4-msvc2022_64;${sourceDir}/third_party/ui-deps",
+        "OGRE_NEXT_ROOT": "${sourceDir}/third_party/ogre-next/v3.0.0",
+        "BUILD_TESTING": "ON"
+      },
+      "environment": {
+        "VSCMD_SKIP_SENDTELEMETRY": "1"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "view3d-release",
+      "configurePreset": "view3d-release",
+      "jobs": 2
+    },
+    {
+      "name": "view3d-framework",
+      "configurePreset": "view3d-framework",
+      "targets": ["View3DFrameworkLibraries"],
+      "jobs": 2
+    },
+    {
+      "name": "view3d-ide-release",
+      "configurePreset": "view3d-ide",
+      "configuration": "Release",
+      "jobs": 2
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "view3d-release",
+      "configurePreset": "view3d-release",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

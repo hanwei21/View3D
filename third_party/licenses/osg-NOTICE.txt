@@ -1,0 +1,16 @@
+OpenSceneGraph 依赖说明（倾斜摄影数据读取）
+
+版本与来源
+  OpenSceneGraph 3.6.5，x64 / Release / 动态运行库，含 osgDB 插件 osgdb_osg 与 osgdb_jpeg。
+  预编译树放在仓库内 third_party/osg（include / lib / bin / plugins），已在 .gitignore 中排除，
+  由本机环境提供；构建脚本见 cmake/OsgRuntime.cmake。
+
+许可
+  OpenSceneGraph 使用 OSGPL（基于 LGPL-2.1 的 OpenSceneGraph Public License），
+  上游：https://github.com/openscenegraph/OpenSceneGraph
+  libjpeg-turbo（osgdb_jpeg 的解码库）使用 BSD-3-Clause / IJG 许可。
+  本项目以动态库方式链接，不将上述代码静态并入自有二进制。
+
+用途边界
+  只用 osgDB 读取 .osgb 瓦片并把几何/纹理转成 View3D::ModelMeshDto，
+  渲染完全由 Ogre-Next 负责；不创建 osg::Viewer，也不使用 OSG 的渲染管线。

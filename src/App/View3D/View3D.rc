@@ -1,0 +1,3 @@
+// Resource ID 1 is the first icon enumerated: Explorer, shortcuts and the
+// installer DisplayIcon all pick it up as the application icon.
+1 ICON "View3D.ico"

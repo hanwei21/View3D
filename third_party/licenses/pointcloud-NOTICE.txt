@@ -1,0 +1,17 @@
+点云依赖说明（LAS / LAZ / E57 读取）
+
+版本与来源
+  LASzip（vcpkg laszip）、E57Format（vcpkg libe57format）与随带的 Xerces-C，
+  均为 x64 / Release / 静态库 + 动态运行库（/MD）。预编译树放在
+  third_party/pointcloud（include / lib），已在 .gitignore 中排除，由本机环境提供；
+  接入脚本见 cmake/PointCloudRuntime.cmake。缺失时对应读取器不编译，其余格式照常可用。
+
+许可
+  LASzip：Apache License 2.0，上游 https://github.com/LASzip/LASzip
+  E57Format：Boost Software License 1.0，上游 https://github.com/asm66/E57Format
+  Xerces-C：Apache License 2.0（E57Format 的 XML 后端），上游 https://xerces.apache.org
+  未引入 LASlib（GPL-2.0）：LAS/LAZ 的解析与解算全部走 LASzip 的 C API。
+
+用途边界
+  只读取点云坐标、强度、RGB 与 E57 的位姿，转成 View3D::ModelMeshDto 的
+  Points 拓扑；超出预算时按体素抽稀。不做点云写回、分类过滤或投影变换。

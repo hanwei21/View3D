@@ -1,0 +1,32 @@
+Cesium Native 依赖说明（3D Tiles 数据读取）
+
+版本与来源
+  Cesium Native 0.62.0（上游 https://github.com/CesiumGS/cesium-native），
+  x64 / Release / 静态库（x64-windows-static-md，动态 MSVC 运行库），
+  预编译树放在仓库内 third_party/cesium-native（include / lib / share），
+  依赖的 vcpkg Release 静态库放在 third_party/cesium-native-deps（include / lib / share）。
+  两棵目录与本说明都在 .gitignore 中排除，由本机环境提供；构建接线见
+  cmake/CesiumNativeRuntime.cmake。
+
+许可
+  Cesium Native 使用 Apache License 2.0，随预编译树保留 LICENSE。
+  静态链接的第三方依赖及其许可（均来自 vcpkg 的 x64-windows-static-md 安装树）：
+    - abseil (Apache-2.0)              s2 (Apache-2.0) 的依赖
+    - Async++ (MIT)                    Cesium Async 的任务调度
+    - draco (Apache-2.0)               glTF 网格压缩
+    - meshoptimizer (MIT)              EXT_meshopt_compression
+    - KTX / astcenc / zstd             KTX2 纹理
+    - libjpeg-turbo (BSD-3-Clause)     JPEG 纹理
+    - libwebp (BSD-3-Clause)           WebP 纹理
+    - blend2d (Zlib) / asmjit (Zlib)   CesiumVectorData
+    - OpenSSL 3 (Apache-2.0)           s2 / 客户端公共组件
+    - spdlog (MIT) / fmt (MIT)         日志
+    - glm (MIT) / ada (Apache-2.0) / tinyxml2 (Zlib) / sqlite3 (Public Domain)
+    - modp_b64 (BSD-3-Clause) / spz (Apache-2.0) / libmorton (MIT)
+    - expected-lite (BSL-1.0) / libcurl (MIT，未链接使用)
+  具体版本与拷贝信息见 third_party/cesium-native-deps/share/*/vcpkg.spdx.json。
+
+用途边界
+  仅用于读取本地 3D Tiles 1.0/1.1 数据（tileset.json、b3dm/i3dm/pnts/cmpt、
+  glTF/GLB、隐式分块与 multiple contents）。渲染仍由 View3D 的 Renderer 插件
+  通过 ModelMeshDto 完成，本库不参与 GPU 资源管理。

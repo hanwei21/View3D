@@ -1,0 +1,24 @@
+地理数据依赖说明（栅格与矢量读取）
+
+版本与来源
+  GDAL 3.x + PROJ 9.8.1 及其依赖闭包（libtiff / libgeotiff / libpng / libjpeg-turbo /
+  turbojpeg / sqlite3 / libcurl / expat / lzma / zlib / json-c），x64 / Release / 动态库。
+  预编译树放在 third_party/geospatial（include / lib / bin / share），已在 .gitignore 中
+  排除，由本机环境提供；接入脚本见 cmake/GeospatialRuntime.cmake。构建时把 gdal.dll 的
+  整条依赖复制进 bin，并把 share/gdal、share/proj 分别部署为 bin/gdal-data 与
+  bin/proj-data —— 读取器按这两个目录名设置 GDAL_DATA / PROJ_DATA。
+  缺失时栅格与矢量读取器不编译，其余格式照常可用。
+
+许可
+  GDAL/OGR：MIT 风格的 GDAL 许可，上游 https://github.com/OSGeo/GDAL
+  PROJ：MIT，上游 https://github.com/OSGeo/PROJ；随带的 proj.db 与栅格格式数据同许可。
+  依赖闭包各按上游许可（libtiff HPND、libpng zlib-libpng、libjpeg-turbo BSD-3/IJG、
+  sqlite3 公有领域、libcurl curl 许可、expat MIT、lzma 公有领域/BSD、zlib、json-c MIT）。
+
+用途边界
+  只按 GDAL/OGR 的 C API 读取：多波段影像转成带贴图的网格，单波段浮点高程转成地形网格，
+  矢量要素转成点与三角形带。不驱动 GDAL 的算法、金字塔或写回。
+  OSG 侧依旧不入库 osgdb_gdal/shp/ogr —— 它们会重复带一份 GDAL+PROJ 闭包，
+  这里统一用本树的 C API 读取。
+  外壳没有坐标参考系服务，因此栅格/矢量不做重投影：投影坐标（米）按原值显示，
+  地理坐标（度）按度当米显示，两者的坐标系标签都记在导入统计里。

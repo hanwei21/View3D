@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application createtime="2026-10-26 00:00:00">
+    <runtime>
+        <librarypaths>
+            <path value="."/>
+            <path value="plugins"/>
+        </librarypaths>
+    </runtime>
+
+    <!-- 插件 DLL 需导出 registerPluginFactories(PluginFactoryRegistry*)。 -->
+    <packages>
+        <package id="plugin.view3d.renderer" path="plugins/View3DRendererPlugin.dll" required="true" provides="view3d.service.renderer,view3d.service.scene"/>
+        <package id="plugin.view3d.sceneview" path="plugins/View3DSceneViewPlugin.dll" required="true" requires="plugin.view3d.renderer" provides="view3d.ui.viewport_layout,view3d.service.viewport,view3d.service.scene_layers,view3d.ui.scene_tree_dock"/>
+        <package id="plugin.view3d.tools" path="plugins/View3DToolsPlugin.dll" required="false" requires="plugin.view3d.sceneview" provides="view3d.tools.measure"/>
+        <package id="plugin.view3d.osgb" path="plugins/View3DOsbPlugin.dll" required="false" requires="plugin.view3d.sceneview" provides="view3d.data.osgb"/>
+        <package id="plugin.view3d.tileset" path="plugins/View3DTilesPlugin.dll" required="false" requires="plugin.view3d.sceneview,plugin.view3d.crs" provides="view3d.data.tileset"/>
+        <package id="plugin.view3d.model" path="plugins/View3DModelPlugin.dll" required="false" requires="plugin.view3d.sceneview" provides="view3d.data.model"/>
+        <package id="plugin.view3d.crs" path="plugins/View3DCrsPlugin.dll" required="false" provides="view3d.service.geo_reference,view3d.ui.crs_commands"/>
+        <package id="plugin.view3d.geo" path="plugins/View3DGeoPlugin.dll" required="false" requires="plugin.view3d.sceneview,plugin.view3d.crs" provides="view3d.data.imagery"/>
+        <package id="plugin.view3d.features" path="plugins/View3DFeaturePlugin.dll" required="false" requires="plugin.view3d.sceneview" provides="view3d.ui.feature_table"/>
+    </packages>
+
+    <!-- 宿主应用组件是系统必需项，固定与 View3DPluginEngine 同目录，不作为插件包声明。 -->
+    <mainapp pluginPath="View3DApplicationPlugin.dll"
+             entry="runConfiguredApplication"
+             caption="View3D 三维视图" windowstate="normal"
+             width="1280" height="800" x="100" y="80"/>
+
+    <welcomescreen enable="false" mode="image" image="resources/welcome.png"
+                   stretch="uniform"/>
+
+    <!-- style: office(宽松三行) / compact-three-row(紧凑三行) / office-two-row(宽松两行) /
+         wps(紧凑两行) / office-single-row(宽松单行) / compact-single-row(紧凑单行)。
+         theme: light / dark / dark2 / office2016-blue / office2021-blue / windows7。
+         右上角按钮由 rightbuttons 下的命令项声明，不再由宿主直接创建控件。
+         用户在界面里切换过的主题和 Ribbon 布局会写入 layout_state.ini 的 ui/theme、
+         ui/ribbonStyle，并覆盖这里的默认值。
+         icon 相对 ui_config.xml 所在目录解析，统一指向 resources/icons/。 -->
+    <ribboncontrol style="office" theme="light">
+        <ribbonpages>
+            <ribbonpage name="page.view" text="视图">
+                <ribbonpagegroup name="group.viewport" text="视口">
+                    <item name="cmd.viewport.layout_single" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="单视口" hint="单个三维视口" type="command" iconSize="small" icon="resources/icons/viewport-single.svg" begingroup="true"/>
+                    <item name="cmd.viewport.layout_dual" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="双视口" hint="左右双视口" type="command" iconSize="small" icon="resources/icons/viewport-dual.svg"/>
+                    <item name="cmd.viewport.layout_quad" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="四视口" hint="四宫格视口" type="command" iconSize="small" icon="resources/icons/viewport-quad.svg"/>
+                    <item name="cmd.viewport.camera_sync" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="同步相机" hint="勾选后主视口相机联动到其他视口" type="checkcommand" iconSize="small" icon="resources/icons/camera-sync.svg"/>
+                </ribbonpagegroup>
+                <ribbonpagegroup name="group.standard_view" text="标准视图">
+                    <item name="cmd.view.front" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="前视图" type="command" iconSize="small" icon="resources/icons/view-front.svg" begingroup="true"/>
+                    <item name="cmd.view.back" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="后视图" type="command" iconSize="small" icon="resources/icons/view-back.svg"/>
+                    <item name="cmd.view.left" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="左视图" type="command" iconSize="small" icon="resources/icons/view-left.svg"/>
+                    <item name="cmd.view.right" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="右视图" type="command" iconSize="small" icon="resources/icons/view-right.svg"/>
+                    <item name="cmd.view.top" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="俯视图" type="command" iconSize="small" icon="resources/icons/view-top.svg"/>
+                    <item name="cmd.view.bottom" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="仰视图" type="command" iconSize="small" icon="resources/icons/view-bottom.svg"/>
+                    <item name="cmd.view.isometric" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="轴测视图" type="command" iconSize="small" icon="resources/icons/view-isometric.svg"/>
+                    <item name="cmd.view.fullscreen" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="全屏" hint="切换主窗口全屏显示" type="checkcommand" iconSize="small" icon="resources/icons/view-fullscreen.svg"/>
+                    <item name="cmd.projection.perspective" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="透视投影" type="command" iconSize="small" icon="resources/icons/projection-perspective.svg" begingroup="true"/>
+                    <item name="cmd.projection.orthographic" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="正交投影" type="command" iconSize="small" icon="resources/icons/projection-orthographic.svg"/>
+                    <item name="cmd.view.mode_2d" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="二维" hint="锁定正俯视、上北下南，不接受旋转，隐藏高程维度" type="checkcommand" iconSize="small" icon="resources/icons/mode-2d.svg" exclusiveGroup="view-mode" begingroup="true"/>
+                    <item name="cmd.view.mode_3d" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="三维" hint="恢复自由观察，并回到进入二维前的相机" type="checkcommand" iconSize="small" icon="resources/icons/mode-3d.svg" exclusiveGroup="view-mode" checked="true"/>
+                    <item name="cmd.view.mode_globe" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="球面" hint="按 WGS84 椭球显示 3D Tiles（其余图层暂时隐藏）；默认关闭" type="checkcommand" iconSize="small" icon="resources/icons/mode-globe.svg" exclusiveGroup="view-mode"/>
+                </ribbonpagegroup>
+                <ribbonpagegroup name="group.geo_reference" text="参照系">
+                    <item name="cmd.crs.display" pluginId="plugin.view3d.crs" factoryId="factory.create_command" caption="显示参照系" hint="默认不启用：局部坐标按数据自己的坐标系。要启用就在下拉里选常用/自定义条目，或点「选择参照系…」从 EPSG 全库里挑；启用后按网格北显示，已导入的矢量/栅格/影像原地重放，倾斜摄影与 3D Tiles 按收敛角刚体跟随" type="dropdown" iconSize="small" icon="resources/icons/crs-grid.svg">
+                        <option value="off" text="不启用（默认）"/>
+                        <option value="choose" text="选择参照系…"/>
+                        <option value="custom" text="手输 EPSG/WKT…"/>
+                    </item>
+                </ribbonpagegroup>
+                <ribbonpagegroup name="group.display_mode" text="显示模式">
+                    <item name="cmd.display.solid" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="实体" type="command" iconSize="small" icon="resources/icons/display-solid.svg" begingroup="true"/>
+                    <item name="cmd.display.wireframe" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="线框" type="command" iconSize="small" icon="resources/icons/display-wireframe.svg"/>
+                    <item name="cmd.display.solid_wireframe" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="实体加边线" type="command" iconSize="small" icon="resources/icons/display-solid-wireframe.svg"/>
+                    <item name="cmd.display.points" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="点模式" type="command" iconSize="small" icon="resources/icons/display-points.svg"/>
+                </ribbonpagegroup>
+                <ribbonpagegroup name="group.environment" text="环境显示">
+                    <item name="cmd.environment.grid" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="地面网格" type="checkcommand" iconSize="small" icon="resources/icons/env-grid.svg"/>
+                    <item name="cmd.environment.axes" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="坐标轴" type="checkcommand" iconSize="small" icon="resources/icons/env-axes.svg"/>
+                    <item name="cmd.environment.background_solid" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="单色背景" type="command" iconSize="small" icon="resources/icons/env-bg-solid.svg"/>
+                    <item name="cmd.environment.background_gradient" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="渐变背景" type="command" iconSize="small" icon="resources/icons/env-bg-gradient.svg"/>
+                    <item name="cmd.environment.ambient_light" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="环境光" type="checkcommand" iconSize="small" icon="resources/icons/env-ambient.svg"/>
+                    <item name="cmd.environment.main_light" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="主方向光" type="checkcommand" iconSize="small" icon="resources/icons/env-main-light.svg"/>
+                    <item name="cmd.environment.shadows" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="阴影" type="checkcommand" iconSize="small" icon="resources/icons/env-shadows.svg"/>
+                    <item name="cmd.environment.shadow_quality_performance" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="阴影-性能" type="checkcommand" exclusiveGroup="shadow-quality" iconSize="small" icon="resources/icons/shadow-quality-low.svg"/>
+                    <item name="cmd.environment.shadow_quality_balanced" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="阴影-平衡" type="checkcommand" exclusiveGroup="shadow-quality" checked="true" iconSize="small" icon="resources/icons/shadow-quality-medium.svg"/>
+                    <item name="cmd.environment.shadow_quality_quality" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="阴影-质量" type="checkcommand" exclusiveGroup="shadow-quality" iconSize="small" icon="resources/icons/shadow-quality-high.svg"/>
+                    <item name="cmd.quality.performance" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="质量-性能" hint="关闭阴影并隐藏网格与坐标轴" type="command" iconSize="small" icon="resources/icons/quality-low.svg" begingroup="true"/>
+                    <item name="cmd.quality.balanced" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="质量-平衡" hint="平衡阴影与辅助显示" type="command" iconSize="small" icon="resources/icons/quality-medium.svg"/>
+                    <item name="cmd.quality.quality" pluginId="plugin.view3d.sceneview" factoryId="factory.create_command" caption="质量-质量" hint="高质量阴影与辅助显示" type="command" iconSize="small" icon="resources/icons/quality-high.svg"/>
+                </ribbonpagegroup>
+                <ribbonpagegroup name="group.windows" text="窗口">
+                    <item name="cmd.window.scene" pluginId="plugin.view3d.sceneview" factoryId="factory.create_scene_command" caption="场景树" hint="显示或隐藏场景树" type="checkcommand" iconSize="small" icon="resources/icons/window-scene.svg"/>
+                    <item name="cmd.window.properties" pluginId="plugin.view3d.sceneview" factoryId="factory.create_scene_command" caption="图层属性" hint="显示或隐藏图层属性面板" type="checkcommand" iconSize="small" icon="resources/icons/window-properties.svg"/>
+                    <item name="cmd.window.feature_table" pluginId="plugin.view3d.features" factoryId="factory.create_command" caption="属性表" hint="显示或隐藏要素属性表" type="checkcommand" iconSize="small" icon="resources/icons/window-table.svg"/>
+                    <item name="cmd.window.crs_manager" pluginId="plugin.view3d.crs" factoryId="factory.create_command" caption="参照系管理" hint="浏览 EPSG 内置参照系、搜索带号与中央经线，并可新建/编辑/导入/导出自定义参照系" type="checkcommand" iconSize="small" icon="resources/icons/window-crs.svg"/>
+                    <item name="cmd.window.plugins" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="插件管理" hint="显示或隐藏插件加载状态面板" type="checkcommand" iconSize="small" icon="resources/icons/window-plugins.svg"/>
+                    <item name="cmd.window.log" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="日志" hint="显示或隐藏运行日志面板" type="checkcommand" iconSize="small" icon="resources/icons/window-log.svg"/>
+                </ribbonpagegroup>
+            </ribbonpage>
+            <ribbonpage name="page.analysis" text="分析">
+                <ribbonpagegroup name="group.measure" text="基础测量">
+                    <item name="cmd.measure.coordinate" pluginId="plugin.view3d.tools" factoryId="factory.create_command" caption="坐标拾取" hint="拾取模型表面坐标" type="checkcommand" exclusiveGroup="measurement-tool" iconSize="large" icon="resources/icons/measure-coordinate.svg"/>
+                    <item name="cmd.measure.distance" pluginId="plugin.view3d.tools" factoryId="factory.create_command" caption="直线距离" hint="依次拾取两个模型表面点" type="checkcommand" exclusiveGroup="measurement-tool" iconSize="large" icon="resources/icons/measure-distance.svg"/>
+                    <item name="cmd.measure.polyline" pluginId="plugin.view3d.tools" factoryId="factory.create_command" caption="折线距离" hint="连续拾取多个点，在视口右键菜单里选「完成折线」保存" type="checkcommand" exclusiveGroup="measurement-tool" iconSize="large" icon="resources/icons/measure-polyline.svg"/>
+                    <item name="cmd.measure.angle" pluginId="plugin.view3d.tools" factoryId="factory.create_command" caption="三点角度" hint="依次拾取起点、顶点和终点" type="checkcommand" exclusiveGroup="measurement-tool" iconSize="large" icon="resources/icons/measure-angle.svg"/>
+                    <item name="cmd.measure.area" pluginId="plugin.view3d.tools" factoryId="factory.create_command" caption="面积与周长" hint="连续拾取顶点，在视口右键菜单里选「完成多边形」闭合" type="checkcommand" exclusiveGroup="measurement-tool" iconSize="large" icon="resources/icons/measure-area.svg"/>
+                    <item name="cmd.measure.snapping" pluginId="plugin.view3d.tools" factoryId="factory.create_command" caption="测量吸附" hint="在容差内吸附到三角形顶点或边中点" type="checkcommand" iconSize="small" icon="resources/icons/measure-snap.svg" begingroup="true"/>
+                    <item name="cmd.window.measurements" pluginId="plugin.view3d.tools" factoryId="factory.create_command" caption="测量结果" hint="显示或隐藏测量结果面板" type="checkcommand" iconSize="small" icon="resources/icons/measure-results.svg"/>
+                </ribbonpagegroup>
+            </ribbonpage>
+            <ribbonpage name="page.interface" text="界面">
+                <ribbonpagegroup name="group.appearance" text="外观">
+                    <item name="cmd.theme.light" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="浅色主题" hint="切换为浅色界面" type="checkcommand" exclusiveGroup="app.theme" iconSize="small" icon="resources/icons/theme-light.svg" begingroup="true"/>
+                    <item name="cmd.theme.dark" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="深色主题" hint="切换为深色界面" type="checkcommand" exclusiveGroup="app.theme" iconSize="small" icon="resources/icons/theme-dark.svg"/>
+                    <item name="cmd.theme.variant" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="主题" hint="选择浅色或深色主题" type="dropdown" iconSize="small" icon="resources/icons/theme-palette.svg" begingroup="true">
+                        <option value="windows7" text="Windows 7" group="light"/>
+                        <option value="office2013" text="Office 2013" group="light"/>
+                        <option value="office2016-blue" text="Office 2016 Blue" group="light"/>
+                        <option value="office2021-blue" text="Office 2021 Blue" group="light"/>
+                        <option value="dark" text="Dark" group="dark"/>
+                        <option value="dark2" text="Dark 2" group="dark"/>
+                    </item>
+                </ribbonpagegroup>
+                <ribbonpagegroup name="group.ribbon_layout" text="Ribbon 布局">
+                    <item name="cmd.ribbon.style.loose_three" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="宽松三行" hint="切换为宽松三行 Ribbon 布局" type="checkcommand" exclusiveGroup="ribbon.style" iconSize="small" icon="resources/icons/ribbon-3-loose.svg" begingroup="true"/>
+                    <item name="cmd.ribbon.style.compact_three" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="紧凑三行" hint="切换为紧凑三行 Ribbon 布局" type="checkcommand" exclusiveGroup="ribbon.style" iconSize="small" icon="resources/icons/ribbon-3-compact.svg"/>
+                    <item name="cmd.ribbon.style.loose_two" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="宽松两行" hint="切换为宽松两行 Ribbon 布局" type="checkcommand" exclusiveGroup="ribbon.style" iconSize="small" icon="resources/icons/ribbon-2-loose.svg"/>
+                    <item name="cmd.ribbon.style.compact_two" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="紧凑两行" hint="切换为紧凑两行 Ribbon 布局" type="checkcommand" exclusiveGroup="ribbon.style" iconSize="small" icon="resources/icons/ribbon-2-compact.svg"/>
+                    <item name="cmd.ribbon.style.loose_single" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="宽松单行" hint="切换为宽松单行 Ribbon 布局" type="checkcommand" exclusiveGroup="ribbon.style" iconSize="small" icon="resources/icons/ribbon-1-loose.svg"/>
+                    <item name="cmd.ribbon.style.compact_single" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="紧凑单行" hint="切换为紧凑单行 Ribbon 布局" type="checkcommand" exclusiveGroup="ribbon.style" iconSize="small" icon="resources/icons/ribbon-1-compact.svg"/>
+                </ribbonpagegroup>
+        </ribbonpage>
+    </ribbonpages>
+        <rightbuttons>
+            <item name="cmd.ribbon.minimize" pluginId="plugin.view3d.host" factoryId="factory.create_command" caption="Ribbon" hint="收起或展开 Ribbon" type="checkcommand" iconSize="small"/>
+        </rightbuttons>
+    </ribboncontrol>
+
+    <!-- 每个可见控件作为一个整体在此声明；场景树是复合控件，内部搜索/筛选/表头
+         由场景视图插件实现，不拆成单独的 XML 控件。
+         icon 指向页签图标，与 Ribbon 共用 resources/icons/ 资源。 -->
+    <applicationLayout>
+        <dockwindows>
+            <dockwindow name="dw.scene" text="场景" pluginId="plugin.view3d.sceneview" factoryId="factory.create_dockwindow"
+                        prefwidth="300" prefheight="720" enable="true" floatable="true" floating="false"
+                        dockpos="left" visibility="Visible" toggleCommand="cmd.window.scene"
+                        icon="resources/icons/window-scene.svg"/>
+            <dockwindow name="dw.plugins" text="插件管理" pluginId="plugin.view3d.host" factoryId="factory.create_dockwindow"
+                        prefwidth="760" prefheight="320" enable="true" floatable="true" floating="false"
+                        dockpos="right" visibility="Hidden" toggleCommand="cmd.window.plugins"
+                        icon="resources/icons/window-plugins.svg"/>
+            <dockwindow name="dw.log" text="日志" pluginId="plugin.view3d.host" factoryId="factory.create_dockwindow"
+                        prefwidth="640" prefheight="220" enable="true" floatable="true" floating="false"
+                        dockpos="bottom" visibility="Hidden" toggleCommand="cmd.window.log"
+                        icon="resources/icons/window-log.svg"/>
+            <dockwindow name="dw.measurements" text="测量结果" pluginId="plugin.view3d.tools" factoryId="factory.create_dockwindow"
+                        prefwidth="420" prefheight="240" enable="true" floatable="true" floating="false"
+                        dockpos="bottom" visibility="Hidden" toggleCommand="cmd.window.measurements"
+                        icon="resources/icons/measure-results.svg"/>
+            <dockwindow name="dw.properties" text="图层属性" pluginId="plugin.view3d.sceneview" factoryId="factory.create_dockwindow"
+                        prefwidth="320" prefheight="640" enable="true" floatable="true" floating="false"
+                        dockpos="right" visibility="Hidden" toggleCommand="cmd.window.properties"
+                        icon="resources/icons/window-properties.svg"/>
+            <dockwindow name="dw.feature_table" text="属性表" pluginId="plugin.view3d.features" factoryId="factory.create_dockwindow"
+                        prefwidth="420" prefheight="260" enable="true" floatable="true" floating="false"
+                        dockpos="bottom" visibility="Hidden" toggleCommand="cmd.window.feature_table"
+                        icon="resources/icons/window-table.svg"/>
+            <dockwindow name="dw.crs_manager" text="参照系管理" pluginId="plugin.view3d.crs" factoryId="factory.create_dockwindow"
+                        prefwidth="980" prefheight="520" enable="true" floatable="true" floating="false"
+                        dockpos="right" visibility="Hidden" toggleCommand="cmd.window.crs_manager"
+                        icon="resources/icons/window-crs.svg"/>
+        </dockwindows>
+        <contentsviews>
+            <contentsview name="view.document_main" text="三维视图"
+                          pluginId="plugin.view3d.sceneview" factoryId="factory.create_contentsview"
+                          defaultHost="documentTabs" icon="resources/icons/app-view.svg"/>
+        </contentsviews>
+    </applicationLayout>
+</application>
